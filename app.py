@@ -51,7 +51,7 @@ try:
 except ImportError:
     from wx import SplashScreen
 
-from pubsub import pub as Publisher
+from invesalius_pubsub import pub as Publisher
 
 #import wx.lib.agw.advancedsplash as agw
 #if sys.platform.startswith('linux'):
