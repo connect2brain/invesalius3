@@ -322,6 +322,10 @@ def parse_comand_line():
 
     parser.add_option("--import-folder", action="store", dest="import_folder")
 
+    parser.add_option("--remote-host",
+                      action="store",
+                      dest="remote_host")
+
     parser.add_option("-s", "--save",
                       help="Save the project after an import.")
 
@@ -487,11 +491,30 @@ def print_events(topic=Publisher.AUTO_TOPIC, **msg_data):
     """
     utils.debug("%s\n\tParameters: %s" % (topic, msg_data))
 
+def setup_remote_host(remote_host):
+    import socketio
+    sio = socketio.Client()
+
+    sio.connect(remote_host)
+
+    def emit(topic, data):
+        print("Emitting data {} to topic {}".format(data, topic))
+        try:
+            if isinstance(topic, str):
+                sio.emit(topic, data)
+        except TypeError:
+            pass
+
+    Publisher.add_sendMessage_hook(emit)
+
 def main():
     """
     Initialize InVesalius GUI
     """
     options, args = parse_comand_line()
+
+    if options.remote_host is not None:
+        setup_remote_host(options.remote_host)
 
     if options.no_gui:
         non_gui_startup(options, args)
