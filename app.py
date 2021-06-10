@@ -25,6 +25,7 @@ import optparse as op
 import os
 import sys
 import shutil
+import time
 import traceback
 
 import re
@@ -495,7 +496,24 @@ def setup_remote_host(remote_host):
     import socketio
     sio = socketio.Client()
 
+    connected = False
+
+    @sio.on('connect')
+    def on_connect():
+        print("Connected to {}".format(remote_host))
+
+        nonlocal connected
+        connected = True
+
+    @sio.on('disconnect')
+    def on_disconnect():
+        print("Disconnected")
+
     sio.connect(remote_host)
+
+    while not connected:
+        print("Connecting...")
+        time.sleep(1.0)
 
     def emit(topic, data):
         print("Emitting data {} to topic {}".format(data, topic))
