@@ -519,7 +519,10 @@ def setup_remote_host(remote_host):
         print("Emitting data {} to topic {}".format(data, topic))
         try:
             if isinstance(topic, str):
-                sio.emit(topic, data)
+                sio.emit("from_neuronavigation", {
+                    "topic": topic,
+                    "data": data,
+                })
         except TypeError:
             pass
 
