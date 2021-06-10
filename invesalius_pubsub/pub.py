@@ -5,6 +5,7 @@
 from typing import Callable
 
 from pubsub import pub as Publisher
+from pubsub.core.listener import UserListener
 
 __all__ = [
     # subscribing
@@ -19,13 +20,21 @@ __all__ = [
 ]
 
 sendMessage_hook = None
+subscribe_hook = None
 
 def add_sendMessage_hook(hook: Callable[[str, dict], None]):
     global sendMessage_hook
     sendMessage_hook = hook
 
-def subscribe(*args, **kwargs):
-    Publisher.subscribe(*args, **kwargs)
+def add_subscribe_hook(hook: Callable[[str, dict], None]):
+    global subscribe_hook
+    subscribe_hook = hook
+
+def subscribe(listener: UserListener, topicName: str, **curriedArgs):
+    subscribedListener, success = Publisher.subscribe(listener, topicName, **curriedArgs)
+    if subscribe_hook is not None:
+        subscribe_hook(listener, topicName)
+    return subscribedListener, success
 
 def unsubscribe(*args, **kwargs):
     Publisher.unsubscribe(*args, **kwargs)

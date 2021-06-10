@@ -523,7 +523,14 @@ def setup_remote_host(remote_host):
         except TypeError:
             pass
 
+    def subscribe(listener, topic):
+        @sio.on(topic)
+        def handler(data):
+            print("Received socket.io event into topic '" + topic + "' with data " + str(data))
+            listener(**data)
+
     Publisher.add_sendMessage_hook(emit)
+    Publisher.add_subscribe_hook(subscribe)
 
 def main():
     """
