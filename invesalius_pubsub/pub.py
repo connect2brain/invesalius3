@@ -44,4 +44,7 @@ def sendMessage(topicName: str, **msgdata):
     if sendMessage_hook is not None:
         sendMessage_hook(topicName, msgdata)
 
+def sendMessage_no_hook(topicName: str, **msgdata):
+    Publisher.sendMessage(topicName, **msgdata)
+
 AUTO_TOPIC = Publisher.AUTO_TOPIC

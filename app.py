@@ -526,14 +526,18 @@ def setup_remote_host(remote_host):
         except TypeError:
             pass
 
-    def subscribe(listener, topic):
-        @sio.on("to_neuronavigation")
-        def handler(data):
-            print("Received an event into topic '{}' with data {}".format(topic, str(data)))
-            listener(**data)
+    @sio.on("to_neuronavigation")
+    def handler(msg):
+        topic = msg["topic"]
+        data = msg["data"]
+
+        print("Received an event into topic '{}' with data {}".format(topic, str(data)))
+        Publisher.sendMessage_no_hook(
+            topicName=topic,
+            **data
+        )
 
     Publisher.add_sendMessage_hook(emit)
-    Publisher.add_subscribe_hook(subscribe)
 
 def main():
     """
