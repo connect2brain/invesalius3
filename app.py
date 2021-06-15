@@ -527,9 +527,9 @@ def setup_remote_host(remote_host):
             pass
 
     def subscribe(listener, topic):
-        @sio.on(topic)
+        @sio.on("to_neuronavigation")
         def handler(data):
-            print("Received socket.io event into topic '" + topic + "' with data " + str(data))
+            print("Received an event into topic '{}' with data {}".format(topic, str(data)))
             listener(**data)
 
     Publisher.add_sendMessage_hook(emit)
