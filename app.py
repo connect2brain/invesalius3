@@ -490,9 +490,15 @@ def print_events(topic=Publisher.AUTO_TOPIC, **msg_data):
     utils.debug("%s\n\tParameters: %s" % (topic, msg_data))
 
 
-def main():
+def main(connection=None):
     """
     Initialize InVesalius GUI
+
+    Parameters:
+        connection: An object to communicate with the outside world.
+          In theory, can be any object supports certain function calls.
+          See invesalius.net.neuronavigation_api for a comprehensive
+          description of how the object is used.
     """
     options, args = parse_command_line()
 
@@ -512,6 +518,10 @@ def main():
         from invesalius.net.pedal_connection import PedalConnection
 
         PedalConnection().start()
+
+    from invesalius.net.neuronavigation_api import NeuronavigationApi
+
+    NeuronavigationApi(connection)
 
     if options.no_gui:
         non_gui_startup(options, args)
